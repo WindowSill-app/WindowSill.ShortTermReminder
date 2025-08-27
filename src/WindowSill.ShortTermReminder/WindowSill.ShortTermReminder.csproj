@@ -16,7 +16,7 @@
         <RepositoryUrl>https://github.com/WindowSill-app/WindowSill.ShortTermReminder</RepositoryUrl>
     </PropertyGroup>
     <ItemGroup>
-		<None Include="Assets/alarm.png" Pack="true" PackagePath="\Assets\" />
+        <None Include="Assets/alarm.png" Pack="true" PackagePath="\Assets\" />
         <None Include="LICENSE.md" Pack="true" PackagePath="\" />
     </ItemGroup>
     <ItemGroup>
@@ -24,6 +24,6 @@
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="WindowSill.API" Version="0.0.3" />
+        <PackageReference Include="WindowSill.API" Version="0.0.3.1" />
     </ItemGroup>
 </Project>
