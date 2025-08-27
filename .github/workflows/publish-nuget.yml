@@ -34,7 +34,7 @@ jobs:
       run: msbuild src/WindowSill.ShortTermReminder/WindowSill.ShortTermReminder.csproj /p:Configuration=Release /p:Platform="Any CPU" /p:RestorePackages=false
       
     - name: Create NuGet package with MSBuild
-      run: msbuild src/WindowSill.ShortTermReminder/WindowSill.ShortTermReminder.csproj /t:Pack /p:Configuration=Release /p:Platform="Any CPU" /p:PackageOutputPath=../../artifacts /p:NoBuild=true
+      run: msbuild src/WindowSill.ShortTermReminder/WindowSill.ShortTermReminder.csproj /t:Pack /p:Configuration=Release /p:Platform="Any CPU" /p:PackageOutputPath=./artifacts /p:NoBuild=true
       
     - name: Publish to NuGet.org
       run: dotnet nuget push ./artifacts/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
