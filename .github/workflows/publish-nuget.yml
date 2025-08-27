@@ -30,11 +30,11 @@ jobs:
     - name: Debug - Show current directory and structure
       run: |
         echo "Current working directory:"
-        pwd
+        Get-Location
         echo "GitHub workspace:"
         echo "${{ github.workspace }}"
         echo "Repository structure:"
-        ls -la
+        Get-ChildItem
         echo "Looking for project file:"
         if (Test-Path "src/WindowSill.ShortTermReminder/WindowSill.ShortTermReminder.csproj") {
           echo "✓ Project file found at src/WindowSill.ShortTermReminder/WindowSill.ShortTermReminder.csproj"
@@ -55,7 +55,7 @@ jobs:
         echo "Before packing - checking if artifacts directory exists:"
         if (Test-Path "${{ github.workspace }}/artifacts") {
           echo "✓ Artifacts directory exists"
-          ls -la "${{ github.workspace }}/artifacts"
+          Get-ChildItem "${{ github.workspace }}/artifacts"
         } else {
           echo "✗ Artifacts directory does not exist"
         }
@@ -69,7 +69,7 @@ jobs:
         if (Test-Path "${{ github.workspace }}/artifacts") {
           echo "✓ Artifacts directory exists"
           echo "Contents of artifacts directory:"
-          ls -la "${{ github.workspace }}/artifacts"
+          Get-ChildItem "${{ github.workspace }}/artifacts"
           echo "Looking for .nupkg files:"
           Get-ChildItem "${{ github.workspace }}/artifacts" -Filter "*.nupkg" | ForEach-Object { echo "Found: $($_.FullName)" }
         } else {
