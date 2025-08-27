@@ -19,6 +19,11 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '9.x'
+
+    - name: Add package sources
+      run: |
+        dotnet nuget add source https://api.nuget.org/v3/index.json -n nuget.org
+        dotnet nuget add source https://pkgs.dev.azure.com/dotnet/CommunityToolkit/_packaging/CommunityToolkit-Labs/nuget/v3/index.json -n CommunityToolkit-Labs
         
     - name: Restore dependencies
       run: dotnet restore src/WindowSill.ShortTermReminder/WindowSill.ShortTermReminder.csproj
