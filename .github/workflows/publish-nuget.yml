@@ -1,4 +1,4 @@
-name: Publish Extension to NuGet.org
+﻿name: Publish Extension to NuGet.org
 
 on:
   push:
@@ -26,6 +26,23 @@ jobs:
     - name: Add package sources
       run: |
         dotnet nuget add source https://pkgs.dev.azure.com/dotnet/CommunityToolkit/_packaging/CommunityToolkit-Labs/nuget/v3/index.json -n CommunityToolkit-Labs
+
+    - name: Debug - Show current directory and structure
+      run: |
+        echo "Current working directory:"
+        pwd
+        echo "GitHub workspace:"
+        echo "${{ github.workspace }}"
+        echo "Repository structure:"
+        ls -la
+        echo "Looking for project file:"
+        if (Test-Path "src/WindowSill.ShortTermReminder/WindowSill.ShortTermReminder.csproj") {
+          echo "✓ Project file found at src/WindowSill.ShortTermReminder/WindowSill.ShortTermReminder.csproj"
+        } else {
+          echo "✗ Project file NOT found at src/WindowSill.ShortTermReminder/WindowSill.ShortTermReminder.csproj"
+          echo "Searching for .csproj files:"
+          Get-ChildItem -Recurse -Filter "*.csproj"
+        }
         
     - name: Restore dependencies
       run: dotnet restore src/WindowSill.ShortTermReminder/WindowSill.ShortTermReminder.csproj
@@ -33,8 +50,40 @@ jobs:
     - name: Build project with MSBuild
       run: msbuild src/WindowSill.ShortTermReminder/WindowSill.ShortTermReminder.csproj /p:Configuration=Release /p:Platform="Any CPU" /p:RestorePackages=false
       
+    - name: Debug - Check before packing
+      run: |
+        echo "Before packing - checking if artifacts directory exists:"
+        if (Test-Path "${{ github.workspace }}/artifacts") {
+          echo "✓ Artifacts directory exists"
+          ls -la "${{ github.workspace }}/artifacts"
+        } else {
+          echo "✗ Artifacts directory does not exist"
+        }
+        
     - name: Create NuGet package with MSBuild
       run: msbuild src/WindowSill.ShortTermReminder/WindowSill.ShortTermReminder.csproj /t:Pack /p:Configuration=Release /p:Platform="Any CPU" /p:PackageOutputPath=${{ github.workspace }}/artifacts /p:NoBuild=true
+      
+    - name: Debug - Check after packing
+      run: |
+        echo "After packing - checking artifacts directory:"
+        if (Test-Path "${{ github.workspace }}/artifacts") {
+          echo "✓ Artifacts directory exists"
+          echo "Contents of artifacts directory:"
+          ls -la "${{ github.workspace }}/artifacts"
+          echo "Looking for .nupkg files:"
+          Get-ChildItem "${{ github.workspace }}/artifacts" -Filter "*.nupkg" | ForEach-Object { echo "Found: $($_.FullName)" }
+        } else {
+          echo "✗ Artifacts directory still does not exist"
+        }
+        echo "Also checking project output directory:"
+        if (Test-Path "src/WindowSill.ShortTermReminder/bin") {
+          echo "Project bin directory contents:"
+          Get-ChildItem "src/WindowSill.ShortTermReminder/bin" -Recurse -Filter "*.nupkg" | ForEach-Object { echo "Found in bin: $($_.FullName)" }
+        }
+        if (Test-Path "src/WindowSill.ShortTermReminder/artifacts") {
+          echo "Project artifacts directory contents:"
+          Get-ChildItem "src/WindowSill.ShortTermReminder/artifacts" -Recurse -Filter "*.nupkg" | ForEach-Object { echo "Found in project artifacts: $($_.FullName)" }
+        }
       
     - name: Publish to NuGet.org
       run: dotnet nuget push ${{ github.workspace }}/artifacts/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
