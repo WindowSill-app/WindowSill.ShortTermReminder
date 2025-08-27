@@ -5,13 +5,13 @@
         <ImplicitUsings>enable</ImplicitUsings>
 
         <PackageId>WindowSill.ShortTermReminder</PackageId>
-        <Version>0.0.1</Version>
+        <Version>0.0.3</Version>
         <Authors>Etienne Baudoux</Authors>
         <Title>Short Term Reminder</Title>
         <Description>Who needs a way to be reminded about quick things to do in a short period of time? Designed with ADHD in mind, this WindowSill extension delivers bold, full-screen reminders and frictionless task prompts that cut through distraction and keep you centered.</Description>
         <PackageIcon>Assets/alarm.png</PackageIcon>
         <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
-        <PackageProjectUrl>https://TODO</PackageProjectUrl>
+        <PackageProjectUrl>https://getwindowsill.app</PackageProjectUrl>
         <RepositoryUrl>https://github.com/WindowSill-app/WindowSill.ShortTermReminder</RepositoryUrl>
     </PropertyGroup>
     <ItemGroup>
@@ -23,6 +23,6 @@
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="WindowSill.API" Version="0.0.0.2" />
+        <PackageReference Include="WindowSill.API" Version="0.0.3" />
     </ItemGroup>
 </Project>
