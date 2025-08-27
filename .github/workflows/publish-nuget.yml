@@ -22,7 +22,6 @@ jobs:
 
     - name: Add package sources
       run: |
-        dotnet nuget add source https://api.nuget.org/v3/index.json -n nuget.org
         dotnet nuget add source https://pkgs.dev.azure.com/dotnet/CommunityToolkit/_packaging/CommunityToolkit-Labs/nuget/v3/index.json -n CommunityToolkit-Labs
         
     - name: Restore dependencies
