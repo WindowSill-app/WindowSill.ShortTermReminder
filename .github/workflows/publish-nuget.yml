@@ -37,10 +37,10 @@ jobs:
       run: msbuild src/WindowSill.ShortTermReminder/WindowSill.ShortTermReminder.csproj /t:Pack /p:Configuration=Release /p:Platform="Any CPU" /p:PackageOutputPath=./artifacts /p:NoBuild=true
       
     - name: Publish to NuGet.org
-      run: dotnet nuget push ./artifacts/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+      run: dotnet nuget push src/WindowSill.ShortTermReminder/artifacts/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
       
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
         name: nuget-package
-        path: ./artifacts/*.nupkg
+        path: src/WindowSill.ShortTermReminder/artifacts/*.nupkg
