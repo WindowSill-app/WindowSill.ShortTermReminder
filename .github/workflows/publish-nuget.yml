@@ -20,6 +20,9 @@ jobs:
       with:
         dotnet-version: '9.x'
 
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+
     - name: Add package sources
       run: |
         dotnet nuget add source https://pkgs.dev.azure.com/dotnet/CommunityToolkit/_packaging/CommunityToolkit-Labs/nuget/v3/index.json -n CommunityToolkit-Labs
@@ -27,8 +30,8 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore src/WindowSill.ShortTermReminder/WindowSill.ShortTermReminder.csproj
       
-    - name: Build project
-      run: dotnet build src/WindowSill.ShortTermReminder/WindowSill.ShortTermReminder.csproj --configuration Release --no-restore
+    - name: Build project with MSBuild
+      run: msbuild src/WindowSill.ShortTermReminder/WindowSill.ShortTermReminder.csproj /p:Configuration=Release /p:Platform="Any CPU" /p:RestorePackages=false
       
     - name: Create NuGet package
       run: dotnet pack src/WindowSill.ShortTermReminder/WindowSill.ShortTermReminder.csproj --configuration Release --no-build --output ./artifacts
