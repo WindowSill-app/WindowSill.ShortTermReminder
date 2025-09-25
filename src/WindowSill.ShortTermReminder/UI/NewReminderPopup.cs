@@ -114,6 +114,7 @@ internal sealed partial class NewReminderPopup : ObservableObject
 
         _reminderTextBox.KeyDown += ReminderTextBox_KeyDown;
         _reminderTextBox.TextChanged += ReminderTextBox_TextChanged;
+        _minutesNumberBox.KeyDown += ReminderTextBox_KeyDown;
         _minutesNumberBox.ValueChanged += MinutesNumberBox_ValueChanged;
         _okButton.Click += OKButton_Click;
     }
@@ -147,7 +148,14 @@ internal sealed partial class NewReminderPopup : ObservableObject
         if (e.Key == VirtualKey.Enter)
         {
             e.Handled = true;
-            OKButton_Click(sender, e);
+            Task.Run(async () =>
+            {
+                await Task.Delay(100);
+                _view.DispatcherQueue.TryEnqueue(() =>
+                {
+                    OKButton_Click(sender, null!);
+                });
+            });
         }
     }
 
