@@ -118,20 +118,20 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="General" xml:space="preserve">
-    <value>General</value>
+    <value>一般</value>
   </data>
   <data name="NotificationMode.Description" xml:space="preserve">
-    <value>Choose how reminders appear.
-• Toast notification provide a small pop-up that blends into your workflow and stays in Windows Action Center.
-• Full-screen notification take over the display, ensuring it is impossible to overlook—even when Windows is in Focus mode. Ideal for anyone who benefits from stronger visual cues to stay on track.</value>
+    <value>選擇提醒出現的方式。
+• Toast 通知提供一個小的彈出式通知，融入您的工作流程且會停留在 Windows 行動中心。
+• 全螢幕通知會占據整個顯示屏，確保難以被忽略——即使 Windows 處於專注模式時也一樣。適合需要更強視覺提示以保持專注的使用者。</value>
   </data>
   <data name="NotificationMode.Header" xml:space="preserve">
-    <value>Notification mode</value>
+    <value>通知模式</value>
   </data>
   <data name="NotificationModeToggle.OffContent" xml:space="preserve">
-    <value>Toast notification</value>
+    <value>Toast 通知</value>
   </data>
   <data name="NotificationModeToggle.OnContent" xml:space="preserve">
-    <value>Full-screen notification</value>
+    <value>全螢幕通知</value>
   </data>
 </root>
