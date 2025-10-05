@@ -117,7 +117,21 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="NewReminderTooltip" xml:space="preserve">
-    <value>Nouveau rappel à court terme</value>
+  <data name="General" xml:space="preserve">
+    <value>Chung</value>
+  </data>
+  <data name="NotificationMode.Description" xml:space="preserve">
+    <value>Chọn cách thức hiển thị lời nhắc.
+• Thông báo dạng phù hợp thể hiện một cửa sổ nhỏ nổi bật phù hợp với quy trình làm việc của bạn và ở trong Trung tâm hành động của Windows.
+• Thông báo toàn màn hình chiếm lĩnh màn hình, đảm bảo không thể bỏ qua—ngay cả khi Windows đang ở chế độ Tập Trung. Lý tưởng cho những ai hưởng lợi từ các chỉ dẫn thị giác mạnh mẽ hơn để duy trì đúng hướng.</value>
+  </data>
+  <data name="NotificationMode.Header" xml:space="preserve">
+    <value>Chế độ thông báo</value>
+  </data>
+  <data name="NotificationModeToggle.OffContent" xml:space="preserve">
+    <value>Thông báo dạng phù hợp</value>
+  </data>
+  <data name="NotificationModeToggle.OnContent" xml:space="preserve">
+    <value>Thông báo toàn màn hình</value>
   </data>
 </root>

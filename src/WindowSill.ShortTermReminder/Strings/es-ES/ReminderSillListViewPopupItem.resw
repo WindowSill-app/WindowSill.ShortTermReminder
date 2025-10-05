@@ -117,7 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="NewReminderTooltip" xml:space="preserve">
-    <value>Nouveau rappel à court terme</value>
+  <data name="Delete" xml:space="preserve">
+    <value>Eliminar</value>
+  </data>
+  <data name="ReminderPassed" xml:space="preserve">
+    <value>El recordatorio ha pasado</value>
+  </data>
+  <data name="ReminderRemainingTime" xml:space="preserve">
+    <value>En {0} minutos (a {1})</value>
   </data>
 </root>
