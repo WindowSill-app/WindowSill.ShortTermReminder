@@ -118,12 +118,12 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Delete" xml:space="preserve">
-    <value>Delete</value>
+    <value>削除</value>
   </data>
   <data name="ReminderPassed" xml:space="preserve">
-    <value>Reminder time has passed</value>
+    <value>リマインダーの時間が経過しました</value>
   </data>
   <data name="ReminderRemainingTime" xml:space="preserve">
-    <value>In {0} minutes (at {1})</value>
+    <value>{0}分後（{1}に）</value>
   </data>
 </root>
