@@ -117,7 +117,21 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="NewReminderTooltip" xml:space="preserve">
-    <value>Nouveau rappel à court terme</value>
+  <data name="General" xml:space="preserve">
+    <value>Загальні</value>
+  </data>
+  <data name="NotificationMode.Description" xml:space="preserve">
+    <value>Обрати спосіб відображення нагадувань.
+• Сповіщення у вигляді тосту надає невелике спливне повідомлення, яке гармонійно вписується у ваш робочий процес і залишається у Центрі дій Windows.
+• Повноекранне сповіщення займає весь дисплей, що робить його неможливим пропустити—even коли Windows у режимі фокусування. Ідеально підходить для тих, хто потребує сильніших візуальних підказок, щоб залишатися на правильному шляху.</value>
+  </data>
+  <data name="NotificationMode.Header" xml:space="preserve">
+    <value>Режим сповіщення</value>
+  </data>
+  <data name="NotificationModeToggle.OffContent" xml:space="preserve">
+    <value>Сповіщення у вигляді тосту</value>
+  </data>
+  <data name="NotificationModeToggle.OnContent" xml:space="preserve">
+    <value>Повноекранне сповіщення</value>
   </data>
 </root>
