@@ -197,15 +197,18 @@ internal sealed partial class FullScreenNotificationWindow : ObservableObject
         if (_monitorRect.HasValue)
         {
             // Position the window on the specific monitor
-            var rect = _monitorRect.Value;
-            _view.UnderlyingWindow.Move(rect.left, rect.top);
-            _view.UnderlyingWindow.Resize(rect.right - rect.left, rect.bottom - rect.top);
+            RECT rect = _monitorRect.Value;
+            _view.UnderlyingWindow.MoveAndResize(
+                rect.left,
+                rect.top,
+                rect.right - rect.left,
+                rect.bottom - rect.top);
         }
         else
         {
             _view.UnderlyingWindow.Maximize();
         }
-        
+
         _view.UnderlyingWindow.Show();
         _view.UnderlyingWindow.BringToFront();
         _view.UnderlyingWindow.Activate();

@@ -147,10 +147,10 @@ internal sealed class ShortTermReminderService
             else
             {
                 var windows = new List<FullScreenNotificationWindow>();
-                var closeAllWindows = (FullScreenNotificationWindow closedWindow) =>
+                Action<FullScreenNotificationWindow> closeAllWindows = (FullScreenNotificationWindow closedWindow) =>
                 {
                     // Close all other windows when one is closed
-                    foreach (var window in windows)
+                    foreach (FullScreenNotificationWindow window in windows)
                     {
                         if (window != closedWindow)
                         {
@@ -161,7 +161,7 @@ internal sealed class ShortTermReminderService
 
                 // Create a window for each monitor
                 bool isFirstWindow = true;
-                foreach (var monitorRect in monitors)
+                foreach (RECT monitorRect in monitors)
                 {
                     var window = new FullScreenNotificationWindow(reminder, monitorRect, closeAllWindows, playAudio: isFirstWindow);
                     windows.Add(window);
@@ -169,7 +169,7 @@ internal sealed class ShortTermReminderService
                 }
 
                 // Show all windows and wait for the first one to close
-                var tasks = windows.Select(w => w.ShowAsync()).ToArray();
+                Task[] tasks = windows.Select(w => w.ShowAsync()).ToArray();
                 await Task.WhenAny(tasks);
             }
         }
