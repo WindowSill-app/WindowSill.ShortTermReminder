@@ -22,14 +22,20 @@ internal sealed partial class FullScreenNotificationWindow : ObservableObject
     private readonly AcrylicWindowFrameworkElement _view;
     private readonly MediaPlayerElement _backgroundMediaPlayer = new();
     private readonly TaskCompletionSource<bool> _windowClosedTaskCompletionSource = new();
+    private readonly Action<FullScreenNotificationWindow>? _onWindowClosed;
+    private readonly RECT? _monitorRect;
+    private readonly bool _playAudio;
 
-    internal FullScreenNotificationWindow(Reminder reminder)
+    internal FullScreenNotificationWindow(Reminder reminder, RECT? monitorRect = null, Action<FullScreenNotificationWindow>? onWindowClosed = null, bool playAudio = true)
     {
         var uri = new Uri($@"{Environment.GetFolderPath(Environment.SpecialFolder.Windows)}\media\Windows Notify Calendar.wav");
         var audioNotificationMediaSource = MediaSource.CreateFromUri(uri);
         _backgroundMediaPlayer.Source = audioNotificationMediaSource;
 
         _reminder = reminder;
+        _monitorRect = monitorRect;
+        _onWindowClosed = onWindowClosed;
+        _playAudio = playAudio;
         _view = new AcrylicWindowFrameworkElement()
             .DataContext(
                 this,
@@ -188,7 +194,18 @@ internal sealed partial class FullScreenNotificationWindow : ObservableObject
 
     internal async Task ShowAsync()
     {
-        _view.UnderlyingWindow.Maximize();
+        if (_monitorRect.HasValue)
+        {
+            // Position the window on the specific monitor
+            var rect = _monitorRect.Value;
+            _view.UnderlyingWindow.Move(rect.left, rect.top);
+            _view.UnderlyingWindow.Resize(rect.right - rect.left, rect.bottom - rect.top);
+        }
+        else
+        {
+            _view.UnderlyingWindow.Maximize();
+        }
+        
         _view.UnderlyingWindow.Show();
         _view.UnderlyingWindow.BringToFront();
         _view.UnderlyingWindow.Activate();
@@ -197,14 +214,23 @@ internal sealed partial class FullScreenNotificationWindow : ObservableObject
         await _windowClosedTaskCompletionSource.Task;
     }
 
+    internal void Close()
+    {
+        _view.UnderlyingWindow.Close();
+    }
+
     private void UnderlyingWindow_Closed(object sender, WindowEventArgs e)
     {
         _windowClosedTaskCompletionSource.TrySetResult(true);
+        _onWindowClosed?.Invoke(this);
     }
 
     private void BackgroundMediaPlayer_Loaded(object sender, RoutedEventArgs e)
     {
-        _backgroundMediaPlayer.MediaPlayer.Play();
+        if (_playAudio)
+        {
+            _backgroundMediaPlayer.MediaPlayer.Play();
+        }
     }
 
     [RelayCommand]
