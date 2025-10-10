@@ -5,6 +5,10 @@ using Microsoft.Windows.AppNotifications.Builder;
 
 using System.Collections.ObjectModel;
 
+using Windows.Win32;
+using Windows.Win32.Foundation;
+using Windows.Win32.Graphics.Gdi;
+
 using WindowSill.API;
 using WindowSill.ShortTermReminder.UI;
 
@@ -116,8 +120,58 @@ internal sealed class ShortTermReminderService
         Guard.IsNotNull(_settingsProvider);
         if (_settingsProvider.GetSetting(Settings.Settings.UseFullScreenNotification))
         {
-            var fullScreenNotificationWindow = new FullScreenNotificationWindow(reminder);
-            await fullScreenNotificationWindow.ShowAsync();
+            // Enumerate all monitors
+            var monitors = new List<RECT>();
+            unsafe
+            {
+                PInvoke.EnumDisplayMonitors(
+                    (HDC)default,
+                    null,
+                    (HMONITOR hMonitor, HDC hdcMonitor, RECT* lprcMonitor, LPARAM dwData) =>
+                    {
+                        if (lprcMonitor != null)
+                        {
+                            monitors.Add(*lprcMonitor);
+                        }
+                        return true;
+                    },
+                    (LPARAM)0);
+            }
+
+            if (monitors.Count == 0)
+            {
+                // Fallback to single window if no monitors detected
+                var fallbackWindow = new FullScreenNotificationWindow(reminder);
+                await fallbackWindow.ShowAsync();
+            }
+            else
+            {
+                var windows = new List<FullScreenNotificationWindow>();
+                Action<FullScreenNotificationWindow> closeAllWindows = (FullScreenNotificationWindow closedWindow) =>
+                {
+                    // Close all other windows when one is closed
+                    foreach (FullScreenNotificationWindow window in windows)
+                    {
+                        if (window != closedWindow)
+                        {
+                            window.Close();
+                        }
+                    }
+                };
+
+                // Create a window for each monitor
+                bool isFirstWindow = true;
+                foreach (RECT monitorRect in monitors)
+                {
+                    var window = new FullScreenNotificationWindow(reminder, monitorRect, closeAllWindows, playAudio: isFirstWindow);
+                    windows.Add(window);
+                    isFirstWindow = false;
+                }
+
+                // Show all windows and wait for the first one to close
+                Task[] tasks = windows.Select(w => w.ShowAsync()).ToArray();
+                await Task.WhenAny(tasks);
+            }
         }
         else
         {

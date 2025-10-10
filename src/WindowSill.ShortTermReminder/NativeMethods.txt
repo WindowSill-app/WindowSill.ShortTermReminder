@@ -2,3 +2,9 @@
 DwmSetWindowAttribute
 DWMNCRENDERINGPOLICY
 DWM_WINDOW_CORNER_PREFERENCE
+
+// Monitor Enumeration
+EnumDisplayMonitors
+GetMonitorInfo
+MONITORINFO
+MONITORINFOEX
