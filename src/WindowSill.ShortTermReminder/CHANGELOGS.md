@@ -1,3 +1,6 @@
+# 0.7.0.0
+- Updated dependencies.
+
 # 0.6.3.0
 - Full screen notifications now appear on all connected monitors instead of only the primary monitor.
 
