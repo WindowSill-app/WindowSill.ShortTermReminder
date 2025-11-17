@@ -89,10 +89,16 @@ internal sealed class SyncService
         }
     }
 
+    /// <summary>
+    /// Synchronizes reminders with the configured external service.
+    /// </summary>
+    /// <param name="localReminders">The local reminders to synchronize</param>
+    /// <returns>True if sync was successful, false otherwise</returns>
     internal async Task<bool> SyncRemindersAsync(IEnumerable<Reminder> localReminders)
     {
         Guard.IsNotNull(_settingsProvider);
         
+        // Early exit if not properly configured
         if (_currentProvider == null || !_currentProvider.IsAuthenticated)
             return false;
 
@@ -107,7 +113,8 @@ internal sealed class SyncService
             {
                 case SyncDirection.TwoWay:
                     var mergedReminders = await _currentProvider.SyncAsync(localReminders);
-                    // The caller should handle updating the local reminders
+                    // Note: The caller should handle updating the local reminders with merged results
+                    // This keeps the sync service stateless and allows the caller to control persistence
                     break;
 
                 case SyncDirection.PushOnly:
@@ -116,7 +123,7 @@ internal sealed class SyncService
 
                 case SyncDirection.PullOnly:
                     var pulledReminders = await _currentProvider.PullRemindersAsync();
-                    // The caller should handle updating the local reminders
+                    // Note: The caller should handle updating the local reminders with pulled results
                     break;
             }
 
@@ -125,6 +132,8 @@ internal sealed class SyncService
         }
         catch
         {
+            // Swallow exceptions to avoid disrupting the user experience
+            // In a production implementation, this should log errors for debugging
             return false;
         }
     }

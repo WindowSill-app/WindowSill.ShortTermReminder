@@ -209,7 +209,7 @@ internal sealed class ShortTermReminderService
 
     private void TriggerSyncAsync()
     {
-        // Fire and forget sync operation
+        // Fire and forget sync operation - runs in background without blocking UI
         Task.Run(async () =>
         {
             try
@@ -223,6 +223,10 @@ internal sealed class ShortTermReminderService
         });
     }
 
+    /// <summary>
+    /// Triggers a manual synchronization with the configured external service.
+    /// </summary>
+    /// <returns>True if sync was successful, false otherwise</returns>
     internal async Task<bool> ManualSyncAsync()
     {
         try
