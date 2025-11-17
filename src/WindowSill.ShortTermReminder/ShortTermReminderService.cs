@@ -59,7 +59,8 @@ internal sealed class ShortTermReminderService
         {
             Title = reminderText,
             OriginalReminderDuration = originalReminderDuration,
-            ReminderTime = reminderTime
+            ReminderTime = reminderTime,
+            LastModified = DateTime.Now
         };
 
         int insertIndex;
@@ -105,6 +106,7 @@ internal sealed class ShortTermReminderService
 
         reminder.OriginalReminderDuration = snoozeDuration;
         reminder.ReminderTime = DateTime.Now + snoozeDuration;
+        reminder.LastModified = DateTime.Now;
 
         ReminderSillListViewPopupItem? itemToUpdate
             = ViewList.Select(v => v.DataContext)

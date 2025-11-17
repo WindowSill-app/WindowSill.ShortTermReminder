@@ -5,6 +5,7 @@ using System.ComponentModel.Composition;
 
 using WindowSill.API;
 using WindowSill.ShortTermReminder.Settings;
+using WindowSill.ShortTermReminder.Sync;
 
 namespace WindowSill.ShortTermReminder;
 
@@ -45,6 +46,7 @@ public sealed class ShortTermReminderSill : ISillActivatedByDefault, ISillListVi
     public async ValueTask OnActivatedAsync()
     {
         await ShortTermReminderService.Instance.InitializeAsync(_settingsProvider);
+        await SyncService.Instance.InitializeAsync(_settingsProvider);
     }
 
     public ValueTask OnDeactivatedAsync()

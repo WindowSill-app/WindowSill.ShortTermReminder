@@ -20,7 +20,7 @@ internal sealed class SettingsView : UserControl
                             .Margin(0, 0, 0, 8)
                             .Text("/WindowSill.ShortTermReminder/Settings/General".GetLocalizedString()),
 
-                        new SettingsCard()
+                         new SettingsCard()
                             .Header("/WindowSill.ShortTermReminder/Settings/NotificationMode/Header".GetLocalizedString())
                             .Description("/WindowSill.ShortTermReminder/Settings/NotificationMode/Description".GetLocalizedString())
                             .HeaderIcon(
@@ -35,6 +35,77 @@ internal sealed class SettingsView : UserControl
                                         x => x.Binding(() => viewModel.UseFullScreenNotification)
                                               .TwoWay()
                                               .UpdateSourceTrigger(UpdateSourceTrigger.PropertyChanged)
+                                    )
+                            ),
+
+                        new TextBlock()
+                            .Style(x => x.ThemeResource("BodyStrongTextBlockStyle"))
+                            .Margin(0, 16, 0, 8)
+                            .Text("Synchronization"),
+
+                        new SettingsCard()
+                            .Header("Enable Synchronization")
+                            .Description("Sync your reminders with external task management services")
+                            .HeaderIcon(
+                                new FontIcon()
+                                    .Glyph("\uE895")
+                            )
+                            .Content(
+                                new ToggleSwitch()
+                                    .IsOn(
+                                        x => x.Binding(() => viewModel.SyncEnabled)
+                                              .TwoWay()
+                                              .UpdateSourceTrigger(UpdateSourceTrigger.PropertyChanged)
+                                    )
+                            ),
+
+                        new SettingsCard()
+                            .Header("Sync Provider")
+                            .Description("Choose which service to sync with")
+                            .HeaderIcon(
+                                new FontIcon()
+                                    .Glyph("\uE774")
+                            )
+                            .Content(
+                                new ComboBox()
+                                    .MinWidth(200)
+                                    .ItemsSource(new[]
+                                    {
+                                        "None",
+                                        "Microsoft To-Do",
+                                        "Google Tasks"
+                                    })
+                                    .SelectedIndex(
+                                        x => x.Binding(() => viewModel.SyncProviderType)
+                                              .TwoWay()
+                                              .UpdateSourceTrigger(UpdateSourceTrigger.PropertyChanged)
+                                              .Convert((Sync.SyncProviderType type) => (int)type,
+                                                      (int index) => (Sync.SyncProviderType)index)
+                                    )
+                            ),
+
+                        new SettingsCard()
+                            .Header("Sync Direction")
+                            .Description("Choose how to sync your tasks")
+                            .HeaderIcon(
+                                new FontIcon()
+                                    .Glyph("\uE895")
+                            )
+                            .Content(
+                                new ComboBox()
+                                    .MinWidth(200)
+                                    .ItemsSource(new[]
+                                    {
+                                        "Two-Way",
+                                        "Push Only",
+                                        "Pull Only"
+                                    })
+                                    .SelectedIndex(
+                                        x => x.Binding(() => viewModel.SyncDirection)
+                                              .TwoWay()
+                                              .UpdateSourceTrigger(UpdateSourceTrigger.PropertyChanged)
+                                              .Convert((Sync.SyncDirection direction) => (int)direction,
+                                                      (int index) => (Sync.SyncDirection)index)
                                     )
                             )
                     )
