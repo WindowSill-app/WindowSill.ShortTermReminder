@@ -11,6 +11,7 @@ using Windows.Win32.Graphics.Gdi;
 
 using WindowSill.API;
 using WindowSill.ShortTermReminder.UI;
+using WindowSill.ShortTermReminder.Sync;
 
 namespace WindowSill.ShortTermReminder;
 
@@ -79,6 +80,7 @@ internal sealed class ShortTermReminderService
         ViewList.Insert(insertIndex, ReminderSillListViewPopupItem.CreateView(reminder));
 
         SaveReminders();
+        TriggerSyncAsync();
     }
 
     internal void DeleteReminder(Guid reminderId)
@@ -98,6 +100,7 @@ internal sealed class ShortTermReminderService
         }
 
         SaveReminders();
+        TriggerSyncAsync();
     }
 
     internal void SnoozeReminder(Reminder reminder, TimeSpan snoozeDuration)
@@ -115,6 +118,7 @@ internal sealed class ShortTermReminderService
         itemToUpdate?.EnsureTimerRunning();
 
         SaveReminders();
+        TriggerSyncAsync();
     }
 
     internal async Task NotifyUserAsync(Reminder reminder)
@@ -201,6 +205,48 @@ internal sealed class ShortTermReminderService
             .Select(reminderItem => reminderItem.Reminder)
             .ToArray();
         _settingsProvider.SetSetting(Settings.Settings.Reminders, reminders);
+    }
+
+    private void TriggerSyncAsync()
+    {
+        // Fire and forget sync operation
+        Task.Run(async () =>
+        {
+            try
+            {
+                await PerformSyncAsync();
+            }
+            catch
+            {
+                // Silently fail sync - don't disrupt user experience
+            }
+        });
+    }
+
+    internal async Task<bool> ManualSyncAsync()
+    {
+        try
+        {
+            return await PerformSyncAsync();
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private async Task<bool> PerformSyncAsync()
+    {
+        Guard.IsNotNull(_settingsProvider);
+
+        Reminder[] reminders
+            = ViewList
+            .Select(viewItem => viewItem.DataContext)
+            .OfType<ReminderSillListViewPopupItem>()
+            .Select(reminderItem => reminderItem.Reminder)
+            .ToArray();
+
+        return await SyncService.Instance.SyncRemindersAsync(reminders);
     }
 
     private void OnToastNotificationInvoked(AppNotificationManager sender, AppNotificationActivatedEventArgs args)

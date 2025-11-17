@@ -8,10 +8,12 @@ namespace WindowSill.ShortTermReminder.Settings;
 internal sealed partial class SettingsViewModel : ObservableObject
 {
     private readonly ISettingsProvider _settingsProvider;
+    private string _syncStatusMessage = string.Empty;
 
     public SettingsViewModel(ISettingsProvider settingsProvider)
     {
         _settingsProvider = settingsProvider;
+        UpdateSyncStatus();
     }
 
     public bool UseFullScreenNotification
@@ -53,5 +55,60 @@ internal sealed partial class SettingsViewModel : ObservableObject
     public DateTime LastSyncTime
     {
         get => _settingsProvider.GetSetting(Settings.LastSyncTime);
+    }
+
+    public string SyncStatusMessage
+    {
+        get => _syncStatusMessage;
+        set
+        {
+            _syncStatusMessage = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public async Task AuthenticateAsync()
+    {
+        bool success = await SyncService.Instance.AuthenticateAsync();
+        UpdateSyncStatus();
+    }
+
+    public async Task SignOutAsync()
+    {
+        await SyncService.Instance.SignOutAsync();
+        UpdateSyncStatus();
+    }
+
+    public async Task ManualSyncAsync()
+    {
+        SyncStatusMessage = "Syncing...";
+        bool success = await ShortTermReminderService.Instance.ManualSyncAsync();
+        UpdateSyncStatus();
+        SyncStatusMessage = success ? "Sync completed successfully" : "Sync failed";
+    }
+
+    private void UpdateSyncStatus()
+    {
+        var provider = SyncService.Instance.CurrentProvider;
+        if (provider == null)
+        {
+            SyncStatusMessage = "No sync provider selected";
+        }
+        else if (provider.IsAuthenticated)
+        {
+            var lastSync = LastSyncTime;
+            if (lastSync == DateTime.MinValue)
+            {
+                SyncStatusMessage = $"Connected to {provider.ProviderName} - Never synced";
+            }
+            else
+            {
+                SyncStatusMessage = $"Connected to {provider.ProviderName} - Last synced: {lastSync:g}";
+            }
+        }
+        else
+        {
+            SyncStatusMessage = $"{provider.ProviderName} - Not authenticated";
+        }
     }
 }

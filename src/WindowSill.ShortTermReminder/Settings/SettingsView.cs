@@ -91,7 +91,7 @@ internal sealed class SettingsView : UserControl
                                 new FontIcon()
                                     .Glyph("\uE895")
                             )
-                            .Content(
+                                .Content(
                                 new ComboBox()
                                     .MinWidth(200)
                                     .ItemsSource(new[]
@@ -106,6 +106,34 @@ internal sealed class SettingsView : UserControl
                                               .UpdateSourceTrigger(UpdateSourceTrigger.PropertyChanged)
                                               .Convert((Sync.SyncDirection direction) => (int)direction,
                                                       (int index) => (Sync.SyncDirection)index)
+                                    )
+                            ),
+
+                        new SettingsCard()
+                            .Header("Sync Status")
+                            .Description(
+                                x => x.Binding(() => viewModel.SyncStatusMessage)
+                            )
+                            .HeaderIcon(
+                                new FontIcon()
+                                    .Glyph("\uE895")
+                            )
+                            .Content(
+                                new StackPanel()
+                                    .Orientation(Orientation.Horizontal)
+                                    .Spacing(8)
+                                    .Children(
+                                        new Button()
+                                            .Content("Authenticate")
+                                            .Click(async (s, e) => await viewModel.AuthenticateAsync()),
+
+                                        new Button()
+                                            .Content("Sign Out")
+                                            .Click(async (s, e) => await viewModel.SignOutAsync()),
+
+                                        new Button()
+                                            .Content("Sync Now")
+                                            .Click(async (s, e) => await viewModel.ManualSyncAsync())
                                     )
                             )
                     )
