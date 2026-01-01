@@ -127,12 +127,12 @@
     <value>Novo lembrete de curto prazo</value>
   </data>
   <data name="WillRemindAt" xml:space="preserve">
-    <value>Lembre-me em {0}</value>
+    <value>Me lembre em {0}</value>
   </data>
   <data name="OkButton" xml:space="preserve">
     <value>OK</value>
   </data>
   <data name="ReminderTextBox" xml:space="preserve">
-    <value>Lembre-me de:</value>
+    <value>Me lembre de:</value>
   </data>
 </root>
