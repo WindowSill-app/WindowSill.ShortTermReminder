@@ -1,3 +1,6 @@
+# 0.7.2
+- Improved Portuguese translation.
+
 # 0.7.1
 - Added translation for Portuguese.
 
