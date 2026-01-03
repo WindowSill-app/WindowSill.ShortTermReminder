@@ -11,6 +11,7 @@ using Windows.Win32.Graphics.Gdi;
 
 using WindowSill.API;
 using WindowSill.ShortTermReminder.UI;
+using WindowSill.ShortTermReminder.Sync;
 
 namespace WindowSill.ShortTermReminder;
 
@@ -59,7 +60,8 @@ internal sealed class ShortTermReminderService
         {
             Title = reminderText,
             OriginalReminderDuration = originalReminderDuration,
-            ReminderTime = reminderTime
+            ReminderTime = reminderTime,
+            LastModified = DateTime.Now
         };
 
         int insertIndex;
@@ -78,6 +80,7 @@ internal sealed class ShortTermReminderService
         ViewList.Insert(insertIndex, ReminderSillListViewPopupItem.CreateView(reminder));
 
         SaveReminders();
+        TriggerSyncAsync();
     }
 
     internal void DeleteReminder(Guid reminderId)
@@ -97,6 +100,7 @@ internal sealed class ShortTermReminderService
         }
 
         SaveReminders();
+        TriggerSyncAsync();
     }
 
     internal void SnoozeReminder(Reminder reminder, TimeSpan snoozeDuration)
@@ -105,6 +109,7 @@ internal sealed class ShortTermReminderService
 
         reminder.OriginalReminderDuration = snoozeDuration;
         reminder.ReminderTime = DateTime.Now + snoozeDuration;
+        reminder.LastModified = DateTime.Now;
 
         ReminderSillListViewPopupItem? itemToUpdate
             = ViewList.Select(v => v.DataContext)
@@ -113,6 +118,7 @@ internal sealed class ShortTermReminderService
         itemToUpdate?.EnsureTimerRunning();
 
         SaveReminders();
+        TriggerSyncAsync();
     }
 
     internal async Task NotifyUserAsync(Reminder reminder)
@@ -199,6 +205,52 @@ internal sealed class ShortTermReminderService
             .Select(reminderItem => reminderItem.Reminder)
             .ToArray();
         _settingsProvider.SetSetting(Settings.Settings.Reminders, reminders);
+    }
+
+    private void TriggerSyncAsync()
+    {
+        // Fire and forget sync operation - runs in background without blocking UI
+        Task.Run(async () =>
+        {
+            try
+            {
+                await PerformSyncAsync();
+            }
+            catch
+            {
+                // Silently fail sync - don't disrupt user experience
+            }
+        });
+    }
+
+    /// <summary>
+    /// Triggers a manual synchronization with the configured external service.
+    /// </summary>
+    /// <returns>True if sync was successful, false otherwise</returns>
+    internal async Task<bool> ManualSyncAsync()
+    {
+        try
+        {
+            return await PerformSyncAsync();
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private async Task<bool> PerformSyncAsync()
+    {
+        Guard.IsNotNull(_settingsProvider);
+
+        Reminder[] reminders
+            = ViewList
+            .Select(viewItem => viewItem.DataContext)
+            .OfType<ReminderSillListViewPopupItem>()
+            .Select(reminderItem => reminderItem.Reminder)
+            .ToArray();
+
+        return await SyncService.Instance.SyncRemindersAsync(reminders);
     }
 
     private void OnToastNotificationInvoked(AppNotificationManager sender, AppNotificationActivatedEventArgs args)

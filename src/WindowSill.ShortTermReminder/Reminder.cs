@@ -9,4 +9,8 @@ internal sealed record Reminder
     public DateTime ReminderTime { get; set; } = DateTime.MinValue;
 
     public Guid Id { get; set; } = Guid.NewGuid();
+
+    public string? ExternalId { get; set; }
+
+    public DateTime LastModified { get; set; } = DateTime.MinValue;
 }
